@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Download, Printer, Pencil, ChevronDown } from 'lucide-react';
 import Diagram from './Diagram.jsx';
+import Feedback from './Feedback.jsx';
+import Contact from './Contact.jsx';
 import { buildPlan, planToMarkdown } from '../lib/architecture.js';
 
 function download(name, text) {
@@ -32,7 +34,7 @@ function Plan({ ctx }) {
   );
 }
 
-export default function Result({ ctx, onEdit, onSources }) {
+export default function Result({ ctx, onEdit, onSources, onTool }) {
   const [tab, setTab] = useState('arch');
   return (
     <section className="result">
@@ -48,7 +50,9 @@ export default function Result({ ctx, onEdit, onSources }) {
         <button role="tab" aria-selected={tab === 'arch'} className={tab === 'arch' ? 'on' : ''} onClick={() => setTab('arch')}>Arquitectura</button>
         <button role="tab" aria-selected={tab === 'plan'} className={tab === 'plan' ? 'on' : ''} onClick={() => setTab('plan')}>Plan de protección</button>
       </div>
-      {tab === 'arch' ? <Diagram ctx={ctx} onSources={onSources} /> : <Plan ctx={ctx} />}
+      {tab === 'arch' ? <Diagram ctx={ctx} onSources={onSources} onTool={onTool} /> : <Plan ctx={ctx} />}
+      <Contact orgName={ctx.orgName} />
+      <Feedback />
     </section>
   );
 }

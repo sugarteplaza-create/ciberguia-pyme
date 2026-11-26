@@ -1,3 +1,4 @@
+import { INSTALL_GUIDES, LEVELS } from '../data/installGuides.js';
 import { NODE_TYPES, TOOLS, CLOUD_OPTIONS, DATA_OPTIONS, PEOPLE_OPTIONS } from '../data/catalog.js';
 
 export const DEFAULT_CONTEXT = {
@@ -147,6 +148,7 @@ export function recommend(node, ctx) {
     standards: base.standards,
     notes,
     count: node.count,
+    hardware: node.type === 'backup' ? data.hardware || [] : [],
   };
 }
 
@@ -183,7 +185,12 @@ export function planToMarkdown(ctx) {
     lines.push('**Qué hacer**');
     p.actions.forEach((a) => lines.push(`- [ ] ${a}`));
     lines.push('');
-    lines.push('**Herramientas open source:** ' + p.tools.map((t) => `[${t.name}](${t.url})`).join(', '));
+    if (p.hardware && p.hardware.length) {
+      lines.push('**Con qué hardware**');
+      p.hardware.forEach((h) => lines.push(`- ${h.title}: ${h.detail}`));
+      lines.push('');
+    }
+    lines.push('**Herramientas open source:** ' + p.tools.map((t) => { const g = INSTALL_GUIDES[t.id]; return `[${t.name}](${t.url})` + (g ? ` (nivel ${LEVELS[g.level].label.toLowerCase()})` : ''); }).join(', '));
     lines.push('');
     lines.push('**Estándares**');
     lines.push(`- ISO/IEC 27001:2022: ${p.standards.iso.join('; ')}`);

@@ -109,3 +109,17 @@ describe('recomendaciones', () => {
     }
   });
 });
+
+import { DATA_OPTIONS as _DATA } from '../src/data/catalog.js';
+import { buildArchitecture as _build, recommend as _rec, planToMarkdown as _md, DEFAULT_CONTEXT as _ctx } from '../src/lib/architecture.js';
+describe('hardware de respaldo', () => {
+  it('cada volumen de datos tiene hardware para 3-2-1', () => {
+    for (const o of _DATA) expect(o.hardware.length, o.id).toBeGreaterThanOrEqual(3);
+  });
+  it('el nodo de respaldo muestra hardware y el plan lo incluye', () => {
+    const ctx = { ..._ctx, data: '1-5tb' };
+    const node = _build(ctx).nodes.find((n) => n.type === 'backup');
+    expect(_rec(node, ctx).hardware.length).toBeGreaterThan(0);
+    expect(_md(ctx)).toContain('Con qué hardware');
+  });
+});

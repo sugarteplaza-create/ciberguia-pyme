@@ -180,3 +180,25 @@ a.btn { text-decoration: none; }
   .topbar, .foot, .actions, .tabs, .hint, .login, .feedback { display: none !important; }
   body { background: #fff; }
 }
+
+/* Guía de instalación */
+.chip.lvl-basico { background: #d9f0e1; color: #14532d; }
+.chip.lvl-intermedio { background: #fdeccb; color: #7a4a00; }
+.chip.lvl-avanzado { background: #f9d7d7; color: #7f1d1d; }
+.src-group.focus { outline: 2px solid var(--brand-dark); }
+.src-group h4 { margin: .8rem 0 .2rem; }
+ul.plain { list-style: disc; padding-left: 1.2rem; margin: .2rem 0; display: block; }
+ul.plain li { margin: .15rem 0; }
+.src-group .muted { color: var(--muted); margin: .2rem 0; }
+.lvl-dot { font-size: .7rem; opacity: .85; }
+.toolrow { display: inline-flex; gap: .25rem; align-items: center; }
+button.chip[class*="lvl-"] { border: 0; cursor: pointer; font-size: .72rem; }
+.callout .hint, .hint { color: var(--muted); font-size: .8rem; margin: .3rem 0 0; }
+.err { color: var(--danger); font-size: .85rem; font-weight: 600; }
+.contact { max-width: 640px; }
+.contact .field input, .contact .field select { max-width: 420px; }
+.btn.disabled { opacity: .55; }
+.topbar .who { flex-wrap: wrap; }
+@media print { .contact { display: none !important; } }
+.hw { padding-left: 1.1rem; margin: .2rem 0; }
+.hw li { margin: .3rem 0; }

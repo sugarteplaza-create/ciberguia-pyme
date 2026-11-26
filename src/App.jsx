@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { ShieldCheck, LogOut, BadgeCheck, BookOpen } from 'lucide-react';
+import { ShieldCheck, LogOut, BadgeCheck, BookOpen, Home } from 'lucide-react';
 import { auth0Configured, config } from './config.js';
 import AuthGate from './components/AuthGate.jsx';
 import Intro from './components/Intro.jsx';
 import Wizard from './components/Wizard.jsx';
 import Result from './components/Result.jsx';
 import Sources from './components/Sources.jsx';
-import Feedback from './components/Feedback.jsx';
+import ToolsGuide from './components/ToolsGuide.jsx';
 import { DEFAULT_CONTEXT } from './lib/architecture.js';
 
 function Shell({ user, mfa, onLogout }) {
   const [step, setStep] = useState('intro'); // intro | wizard | result | sources
   const [prev, setPrev] = useState('intro');
-  const go = (next) => { if (next === 'sources') setPrev(step); setStep(next); window.scrollTo(0, 0); };
+  const [toolFocus, setToolFocus] = useState(null);
+  const go = (next, focus = null) => { if (next === 'sources' || next === 'tools') { if (step !== 'sources' && step !== 'tools') setPrev(step); } setToolFocus(focus); setStep(next); window.scrollTo(0, 0); };
   const [ctx, setCtx] = useState(DEFAULT_CONTEXT);
 
   return (
@@ -20,7 +21,9 @@ function Shell({ user, mfa, onLogout }) {
       <header className="topbar">
         <div className="brand"><ShieldCheck size={22} /> CiberGuía Pyme</div>
         <div className="who">
+          <button className="btn ghost small" onClick={() => go('intro')}><Home size={14} /> Inicio</button>
           {mfa && <span className="chip ok" title="Sesión verificada con segundo factor"><BadgeCheck size={14} /> MFA</span>}
+          <button className="btn ghost small" onClick={() => go('tools')}><BookOpen size={14} /> Instalación</button>
           <button className="btn ghost small" onClick={() => go('sources')}><BookOpen size={14} /> Fuentes</button>
           <span className="user">{user?.name || user?.email}</span>
           <button className="btn ghost small" onClick={onLogout}><LogOut size={14} /> Salir</button>
@@ -31,9 +34,9 @@ function Shell({ user, mfa, onLogout }) {
         {step === 'wizard' && (
           <Wizard ctx={ctx} setCtx={setCtx} onFinish={() => go('result')} onBack={() => go('intro')} />
         )}
-        {step === 'result' && <Result ctx={ctx} onEdit={() => go('wizard')} onSources={() => go('sources')} />}
+        {step === 'result' && <Result ctx={ctx} onEdit={() => go('wizard')} onSources={() => go('sources')} onTool={(id) => go('tools', id)} />}
         {step === 'sources' && <Sources onBack={() => go(prev)} />}
-        <Feedback />
+        {step === 'tools' && <ToolsGuide focusId={toolFocus} onBack={() => go(prev)} />}
       </main>
       <footer className="foot">
         Guía educativa basada en ISO/IEC 27001:2022, CIS Controls v8.1 y NIST CSF 2.0. No reemplaza una auditoría.

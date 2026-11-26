@@ -332,7 +332,7 @@ export const NODE_TYPES = {
       'Prueba la restauración al menos una vez por trimestre y mide cuánto tarda.',
       'Documenta qué se respalda, cada cuánto y quién es responsable.',
     ],
-    tools: ['restic', 'borg', 'kopia', 'urbackup', 'rclone'],
+    tools: ['restic', 'borg', 'kopia', 'urbackup', 'rclone', 'truenas', 'veracrypt'],
     standards: {
       iso: ['A.8.13 Respaldo de la información', 'A.5.30 Preparación de las TIC para la continuidad del negocio'],
       cis: ['11 Recuperación de datos'],
@@ -353,24 +353,47 @@ export const DATA_OPTIONS = [
     label: 'Menos de 100 GB',
     hint: 'Documentos, planillas, fotos',
     backup: 'Un disco externo de 1 TB y una copia cifrada fuera del local son suficientes.',
+    hardware: [
+      { title: 'Copia 1 (local)', detail: 'Disco externo USB de 1 TB (HDD o SSD). Con Kopia o restic puedes programar la copia automática.' },
+      { title: 'Copia 2 (otro medio, fuera del local)', detail: 'Segundo disco externo o pendrive grande, cifrado con VeraCrypt, que se guarda en otro lugar y se rota cada semana o mes.' },
+      { title: 'Opcional', detail: 'Copia cifrada en la nube (restic + rclone) si no puedes llevar el disco fuera del local.' },
+    ],
   },
   {
     id: '100gb-1tb',
     label: '100 GB a 1 TB',
     hint: 'Documentos más proyectos o audio/video',
     backup: 'Usa un disco o NAS de 2 a 4 TB (al menos el doble de tus datos para guardar versiones) y una copia fuera del local.',
+    hardware: [
+      { title: 'Copia 1 (local)', detail: 'NAS de 2 bahías en espejo (RAID 1) con 2 discos de 2 a 4 TB, o un mini-PC/PC reutilizado con TrueNAS y 2 discos.' },
+      { title: 'Copia 2 (otro medio)', detail: 'Disco externo USB cifrado (VeraCrypt) que se conecta solo para copiar y se desconecta después.' },
+      { title: 'Copia 3 (fuera del local)', detail: 'Disco externo rotado y guardado en otro lugar, o almacenamiento en la nube cifrado antes de subir (restic/rclone).' },
+      { title: 'Complementos', detail: 'UPS (batería) para el NAS y conexión por cable de red al router o switch.' },
+    ],
   },
   {
     id: '1-5tb',
     label: '1 TB a 5 TB',
     hint: 'Proyectos pesados, grabaciones, bases de datos',
     backup: 'Usa un NAS con redundancia (RAID/ZFS) más una segunda copia externa o fuera del local; planifica capacidad de al menos 2× tus datos.',
+    hardware: [
+      { title: 'Copia 1 (local)', detail: 'NAS de 2 a 4 bahías con RAID/ZFS (RAID 1 o RAID 5/Z1 según bahías) y discos aptos para NAS. Con 2 TB de datos, apunta a unos 4–8 TB de capacidad útil.' },
+      { title: 'Copia 2 (otro medio)', detail: 'Segundo equipo o discos externos de gran capacidad (USB/SATA) para copias periódicas desconectadas.' },
+      { title: 'Copia 3 (fuera del local)', detail: 'Un segundo NAS o disco en otra ubicación (sincronizado con restic o rclone) o almacenamiento en la nube cifrado.' },
+      { title: 'Complementos', detail: 'UPS, switch con puertos de 1 GbE (2,5 GbE si mueves proyectos de audio/video pesados) y monitoreo de la salud de los discos.' },
+    ],
   },
   {
     id: 'gt5tb',
     label: 'Más de 5 TB',
     hint: 'Archivo masivo',
     backup: 'Usa un NAS con redundancia, copias incrementales y almacenamiento fuera del local; define qué datos son críticos para priorizar.',
+    hardware: [
+      { title: 'Copia 1 (local)', detail: 'NAS o servidor de 4 o más bahías con ZFS/RAID de doble paridad (RAID 6/Z2) y discos aptos para NAS.' },
+      { title: 'Copia 2 (otro medio)', detail: 'Segundo NAS, o discos/cintas rotativos, para las copias desconectadas.' },
+      { title: 'Copia 3 (fuera del local)', detail: 'NAS remoto en otra sede, o nube cifrada para los datos críticos (no todo cabe, prioriza qué datos son críticos).' },
+      { title: 'Complementos', detail: 'UPS, red de 2,5 o 10 GbE entre equipos y NAS, y reemplazo programado de discos.' },
+    ],
   },
 ];
 

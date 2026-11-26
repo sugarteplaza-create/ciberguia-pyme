@@ -3,6 +3,7 @@ import { X, Cloud as CloudIcon, ExternalLink } from 'lucide-react';
 import { NODE_TYPES, CLOUD_OPTIONS, STANDARDS } from '../data/catalog.js';
 import { buildArchitecture, recommend } from '../lib/architecture.js';
 import { Icon } from './icons.jsx';
+import { INSTALL_GUIDES, levelLabel } from '../data/installGuides.js';
 
 const HALF = 40;
 
@@ -27,7 +28,7 @@ function edgePath(a, b) {
   return `M ${a.x} ${y1} V ${mid} H ${b.x} V ${y2}`;
 }
 
-function Callout({ node, arch, ctx, onClose, boxRef, onSources }) {
+function Callout({ node, arch, ctx, onClose, boxRef, onSources, onTool }) {
   const rec = useMemo(() => recommend(node, ctx), [node, ctx]);
   const ref = useRef(null);
   const [pos, setPos] = useState({ left: 0, puff: 0 });
@@ -67,14 +68,27 @@ function Callout({ node, arch, ctx, onClose, boxRef, onSources }) {
         {rec.notes.map((n) => <p key={n} className="warn">{n}</p>)}
         <h4>Qué debes hacer</h4>
         <ul>{rec.actions.map((a) => <li key={a}>{a}</li>)}</ul>
+        {rec.hardware && rec.hardware.length > 0 && (<>
+          <h4>Con qué hardware</h4>
+          <ul className="hw">{rec.hardware.map((h) => <li key={h.title}><strong>{h.title}:</strong> {h.detail}</li>)}</ul>
+          <p className="hint">Orientación del proyecto según tu volumen de datos; no se recomiendan marcas ni precios.</p>
+        </>)}
         <h4>Con qué (open source)</h4>
         <div className="chips">
           {rec.tools.map((t) => (
-            <a key={t.id} className="chip tool" href={t.url} target="_blank" rel="noreferrer" title={t.note}>
-              {t.name} <ExternalLink size={11} />
-            </a>
+            <span key={t.id} className="toolrow">
+              <a className="chip tool" href={t.url} target="_blank" rel="noreferrer" title={t.note}>
+                {t.name} <ExternalLink size={11} />
+              </a>
+              {levelLabel(t.id) && (
+                <button type="button" className={`chip lvl-${INSTALL_GUIDES[t.id].level}`} onClick={() => onTool && onTool(t.id)} title="Ver nivel, requisitos y tutoriales">
+                  {levelLabel(t.id)}
+                </button>
+              )}
+            </span>
           ))}
         </div>
+        <p className="hint">El nivel indica la dificultad de instalación. Pulsa para ver requisitos y tutoriales.</p>
         <h4>Basado en <button type="button" className="linklike" onClick={onSources}>(ver fuentes y verificación)</button></h4>
         {['iso', 'cis', 'nist'].map((k) => (
           <p key={k} className="std"><a href={STANDARDS[k].url} target="_blank" rel="noreferrer"><strong>{STANDARDS[k].name}:</strong></a> {rec.standards[k].join(' · ')}</p>
@@ -84,7 +98,7 @@ function Callout({ node, arch, ctx, onClose, boxRef, onSources }) {
   );
 }
 
-export default function Diagram({ ctx, onSources }) {
+export default function Diagram({ ctx, onSources, onTool }) {
   const arch = useMemo(() => buildArchitecture(ctx), [ctx]);
   const [selId, setSelId] = useState(null);
   const boxRef = useRef(null);
@@ -133,7 +147,7 @@ export default function Diagram({ ctx, onSources }) {
             );
           })}
         </svg>
-        {selected && <Callout node={selected} arch={arch} ctx={ctx} boxRef={boxRef} onSources={onSources} onClose={() => setSelId(null)} />}
+        {selected && <Callout node={selected} arch={arch} ctx={ctx} boxRef={boxRef} onSources={onSources} onTool={onTool} onClose={() => setSelId(null)} />}
       </div>
       <ul className="legend">
         <li><span className="sw solid" /> Elegido por ti</li>
